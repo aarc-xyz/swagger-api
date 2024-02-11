@@ -1,0 +1,1345 @@
+openapi: 3.0.0
+servers:
+  - description: Aarc cross-chain API
+    url: https://bridge-swap.aarc.xyz/bridge-swap
+info:
+  description: This is the Aarc's Fund Deposit Kit API for cross-chain transactions.
+  version: "1.0.0"
+  title: Fund Deposit Kit API
+  contact:
+    email: yash@aarc.xyz
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+paths:
+  /supported-tokens:
+    get:
+      tags:
+        - cross-chain
+      description: To get the tokens supported on the provided chainId.
+      parameters:
+        - in: query
+          name: chainId
+          description: chain Id of the network
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: isShortList
+          description: If `true` then provide the top cross chain transferred tokens.
+          schema:
+            type: boolean
+            format: boolean
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/SupportedTokens"
+              example:
+                success: true
+                result:
+                  - chainId: 137
+                    address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                    name: Amp
+                    symbol: AMP
+                    decimals: 18
+                    logoURI: https://assets.polygon.technology/tokenAssets/amp.svg
+
+  /token-supported:
+    get:
+      tags:
+        - cross-chain
+      description: Adds an item to the system
+      parameters:
+        - in: query
+          name: chainId
+          description: chain Id of the network
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: address
+          description: address of the token
+          schema:
+            type: string
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/TokenSupported"
+              example:
+                success: true
+                result:
+                  chainId: 137
+                  address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                  name: Amp
+                  symbol: AMP
+                  decimals: 18
+                  logoURI: https://assets.polygon.technology/tokenAssets/amp.svg
+
+  /supported-chains:
+    get:
+      tags:
+        - cross-chain
+      description: To get the chains supported.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/SupportedChains"
+              example:
+                success: true
+                result:
+                  - chainId: 1
+                    name: "Ethereum"
+                    isL1: true
+                    sendingEnabled: true
+                    icon: "https://media.socket.tech/networks/ethereum.svg"
+                    receivingEnabled: true
+                    refuel:
+                      sendingEnabled: true
+                      receivingEnabled: true
+                    currency:
+                      name: "Ether"
+                      symbol: "ETH"
+                      decimals: 18
+                      icon: "https://maticnetwork.github.io/polygon-token-assets/assets/eth.svg"
+                      address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                      minNativeCurrencyForGas: "15000000000000000"
+                    rpcs: ["https://rpc.ankr.com/eth"]
+                    explorers: ["https://etherscan.io"]
+
+  /quote:
+    get:
+      tags:
+        - cross-chain
+      description: To get the available routes for the cross-chain transfers.
+      parameters:
+        - in: query
+          name: fromChainId
+          description: chain Id of the source network
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: toChainId
+          description: chain Id of the destination network
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: fromTokenAddress
+          description: address of the initial token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: toTokenAddress
+          description: address of the final token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: fromAmount
+          description: amount of the initial token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: userAddress
+          description: address of the user
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: routeType
+          description: This defines the type of route to fetch.`RouteType.Value`, which will return max output on destination. `RouteType.Output`, which has the fastest time to transfer tokens.`RouteType.Gas`, which is going to incur the least gas.
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/Quote"
+              example:
+                success: true
+                result:
+                  routes:
+                    - routeId: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                      isOnlySwapRoute: true
+                      fromAmount: "1000000000000000000"
+                      toAmount: "1000000000000000000"
+                      usedBridgeNames: ["connext"]
+                      minimumGasBalances:
+                        { "56": "2800000000000000", "137": "60000000000000000" }
+                      chainGasBalances:
+                        {
+                          "56":
+                            {
+                              "minGasBalance": "2800000000000000",
+                              "hasGasBalance": false,
+                            },
+                          "137":
+                            {
+                              "minGasBalance": "60000000000000000",
+                              "hasGasBalance": false,
+                            },
+                        }
+                      totalUserTx: 1
+                      sender: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                      recipient: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                      totalGasFeesInUsd: 0
+                      receivedValueInUsd: 0
+                      inputValueInUsd: 0
+                      outputValueInUsd: 0
+                      userTxs:
+                        - userTxType: "Swap"
+                          txType: "Swap"
+                          chainId: 137
+                          toAmount: "1000000000000000000"
+                          toAsset:
+                            chainId: 137
+                            address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                            symbol: "AMP"
+                            name: "Amp"
+                            decimals: 18
+                            icon: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                            logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                            chainAgnosticId: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                          stepCount: 1
+                          routePath: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                          sender: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                          approvalData:
+                            {
+                              "minimumApprovalAmount": "10000000",
+                              "approvalTokenAddress": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+                              "allowanceTarget": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+                              "owner": "0xbb99ee59334f03eae1386e496f0103767263989d",
+                            }
+                          steps:
+                            - type: "middleware"
+                              protocol:
+                                name: "zerox"
+                                displayName: "0x"
+                                icon: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                              chainId: 137
+                              fromAsset:
+                                chainId: 137
+                                address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                                symbol: "AMP"
+                                name: "Amp"
+                                decimals: 18
+                                icon: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                                logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                                chainAgnosticId: "USDT"
+                              fromAmount: "1000000000000000000"
+                              toAsset:
+                                chainId: 137
+                                address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                                symbol: "AMP"
+                                name: "Amp"
+                                decimals: 18
+                                icon: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                                logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg"
+                                chainAgnosticId: "USDC"
+                              toAmount: "1000000000000000000"
+                              swapSlippage: 2
+                              minAmountOut: "1000000000000000000"
+                              gasFees:
+                                {
+                                  gasAmount: "0",
+                                  gasLimit: 0,
+                                  asset:
+                                    {
+                                      chainId: 137,
+                                      address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                                      symbol: "AMP",
+                                      name: "Amp",
+                                      decimals: 18,
+                                      icon: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                                      logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                                      chainAgnosticId: "USDC",
+                                    },
+                                  feesInUsd: 0,
+                                }
+                          gasFees:
+                            {
+                              gasAmount: "0",
+                              gasLimit: 0,
+                              asset:
+                                {
+                                  chainId: 137,
+                                  address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                                  symbol: "AMP",
+                                  name: "Amp",
+                                  decimals: 18,
+                                  icon: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                                  logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                                  chainAgnosticId: "USDC",
+                                },
+                              feesInUsd: 0,
+                            }
+                          serviceTime: 0
+                          recipient: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                          maxServiceTime: 0
+                          bridgeSlippage: 0
+                          swapSlippage: 0
+                          userTxIndex: 0
+                      serviceTime: 0
+                      maxServiceTime: 0
+                      integratorFee:
+                        {
+                          amount: "0",
+                          asset:
+                            {
+                              chainId: 137,
+                              address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                              symbol: "AMP",
+                              name: "Amp",
+                              decimals: 18,
+                              icon: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                              logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                              chainAgnosticId: "USDC",
+                            },
+                        }
+                      extraData:
+                        {
+                          rewards:
+                            ["0x0621d647cecbfb64b79e44302c1933cb4f27054d"],
+                        }
+                socketRoute: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                destinationCallData:
+                  {
+                    "0x0621d647cecbfb64b79e44302c1933cb4f27054d": "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                  }
+                fromChainId: 137
+                fromAsset:
+                  {
+                    chainId: 137,
+                    address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                    symbol: "AMP",
+                    name: "Amp",
+                    decimals: 18,
+                    icon: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                    logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                    chainAgnosticId: "USDT",
+                  }
+                toChainId: 137
+                toAsset:
+                  {
+                    chainId: 137,
+                    address: "0x0621d647cecbfb64b79e44302c1933cb4f27054d",
+                    symbol: "AMP",
+                    name: "Amp",
+                    decimals: 18,
+                    icon: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                    logoURI: "https://assets.polygon.technology/tokenAssets/amp.svg",
+                    chainAgnosticId: "USDC",
+                  }
+                bridgeRouteErrors:
+                  {
+                    "hypen":
+                      {
+                        "status": "MIN_AMOUNT_NOT_MET",
+                        "minAmount": "10000000",
+                      },
+                    "celer":
+                      {
+                        "status": "MIN_AMOUNT_NOT_MET",
+                        "minAmount": "21000000",
+                      },
+                  }
+
+  /allowance:
+    get:
+      tags:
+        - cross-chain
+      description: Check the allowance to an address to spend an asset of another address.
+      parameters:
+        - in: query
+          name: chainId
+          description: chain Id of the network
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: owner
+          description: address of the owner
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: allowanceTarget
+          description: The address to be allowed.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: tokenAddress
+          description: address of the token
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/Allowance"
+              example:
+                success: true
+                result:
+                  value: "1000000000000000000"
+                  tokenAddress: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+
+  /bridge-status:
+    get:
+      tags:
+        - cross-chain
+      description: To get the status of the cross-chain transaction.
+      parameters:
+        - in: query
+          name: transactionHash
+          description: transaction hash of the bridge transaction
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: fromChainId
+          description: chain Id of the source network
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: toChainId
+          description: chain Id of the destination network
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/BridgeStatus"
+              example:
+                success: true
+                result:
+                  destinationTransactionHash: "0x3b333f28ab54c4f728a97577f59c90f82fd081557e17fb9ca38b34dfd85fd012"
+                  sourceTransactionHash: "0xda378afb4e974216698dc2b3f07e8548478302302034c9da45d4411697e781b4"
+                  fromChainId: 137
+                  toChainId: 56
+                  fromAsset:
+                    chainId: 137
+                    address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+                    symbol: "USDC.E"
+                    name: "USDCoin"
+                    decimals: 6
+                    icon: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+                    logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+                    chainAgnosticId: "USDC"
+                  toAsset:
+                    chainId: 56
+                    address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+                    symbol: "USDC"
+                    name: "Binance-Peg USD Coin"
+                    decimals: 18
+                    icon: "https://assets.polygon.technology/tokenAssets/usdc.svg"
+                    logoURI: "https://assets.polygon.technology/tokenAssets/usdc.svg"
+                    chainAgnosticId: "USDC"
+                  refuel: null
+                  srcTokenPrice: 0.999999
+                  destTokenPrice: 1
+                  fromAmount: "844097"
+                  toAmount: "535816534199988929"
+                  sender: "0xbb99ee59334f03eae1386e496f0103767263989d"
+                  recipient: "0xbb99ee59334f03eae1386e496f0103767263989d"
+                  isSocketTx: true
+                  destinationTxStatus: "COMPLETED"
+                  sourceTxStatus: "COMPLETED"
+                  bridgeName: "connext"
+
+  /balances/{walletAddress}:
+    get:
+      tags:
+        - cross-chain
+      description: Get the balances of all the assets on all the chains of an address.
+      parameters:
+        - in: path
+          name: walletAddress
+          description: wallet address of the user
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/Balances"
+              example:
+                code: 200
+                data:
+                  balances:
+                    "1":
+                      balances:
+                        - decimals: 18
+                          symbol: "ETH"
+                          name: "Ethereum"
+                          token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                          balance: "1000000000000000000"
+                          logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
+                          native_token: true
+                          type: "native"
+                          is_spam: false
+                          usd_price: 1000
+                      logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
+                message: "Success"
+
+  /route-transaction-data:
+    post:
+      tags:
+        - cross-chain
+      description: Get the Route Txn data for the quote selected by the user.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RouteTx"
+      responses:
+        "201":
+          description: Txn Data Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteTxResponse"
+
+  /tx:
+    post:
+      tags:
+        - cross-chain
+      description: To add the transaction.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositorAddTx"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "Success"
+
+  /tx-detail:
+    post:
+      tags:
+        - cross-chain
+      description: To get the transaction detail
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositorGetTx"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DepositorGetTxResponse"
+
+components:
+  schemas:
+    SupportedTokens:
+      type: object
+      required:
+        - success
+        - result
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/SupportedToken"
+
+    SupportedToken:
+      type: object
+      properties:
+        chainId:
+          type: integer
+          example: 137
+        address:
+          type: string
+          example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+        name:
+          type: string
+          example: Amp
+        symbol:
+          type: string
+          example: AMP
+        decimals:
+          type: integer
+          example: 18
+        logoURI:
+          type: string
+          example: https://assets.polygon.technology/tokenAssets/amp.svg
+
+    TokenSupported:
+      type: object
+      required:
+        - success
+        - result
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: object
+          properties:
+            isSupported:
+              type: boolean
+              example: true
+            token:
+              type: object
+              properties:
+                chainId:
+                  type: integer
+                  example: 137
+                address:
+                  type: string
+                  example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                symbol:
+                  type: string
+                  example: AMP
+                name:
+                  type: string
+                  example: Amp
+                decimals:
+                  type: integer
+                  example: 18
+                logoURI:
+                  type: string
+                  example: https://assets.polygon.technology/tokenAssets/amp.svg
+                icon:
+                  type: string
+                  example: https://assets.polygon.technology/tokenAssets/amp.svg
+
+    SupportedChains:
+      type: object
+      required:
+        - success
+        - result
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChainDetails"
+
+    ChainDetails:
+      type: object
+      properties:
+        chainId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Ethereum"
+        isL1:
+          type: boolean
+          example: true
+        sendingEnabled:
+          type: boolean
+          example: true
+        icon:
+          type: string
+          example: "https://media.socket.tech/networks/ethereum.svg"
+        receivingEnabled:
+          type: boolean
+          example: true
+        refuel:
+          type: object
+          properties:
+            sendingEnabled:
+              type: boolean
+              example: true
+            receivingEnabled:
+              type: boolean
+              example: true
+        currency:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Ether"
+            symbol:
+              type: string
+              example: "ETH"
+            decimals:
+              type: integer
+              example: 18
+            icon:
+              type: string
+              example: "https://maticnetwork.github.io/polygon-token-assets/assets/eth.svg"
+            address:
+              type: string
+              example: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            minNativeCurrencyForGas:
+              type: string
+              example: "15000000000000000"
+        rpcs:
+          type: array
+          items:
+            type: string
+            example: ["https://rpc.ankr.com/eth"]
+        explorers:
+          type: array
+          items:
+            type: string
+            example: ["https://etherscan.io"]
+
+    Asset:
+      type: object
+      properties:
+        chainId:
+          type: integer
+        address:
+          type: string
+        symbol:
+          type: string
+        name:
+          type: string
+        decimals:
+          type: integer
+        icon:
+          type: string
+        logoURI:
+          type: string
+        chainAgnosticId:
+          type: string
+      required:
+        - chainId
+        - address
+        - symbol
+        - name
+        - decimals
+
+    GasFees:
+      type: object
+      properties:
+        gasAmount:
+          type: string
+        gasLimit:
+          type: integer
+        asset:
+          $ref: "#/components/schemas/Asset"
+        feesInUsd:
+          type: number
+
+    Protocol:
+      type: object
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+        icon:
+          type: string
+        securityScore:
+          type: integer
+        robustnessScore:
+          type: integer
+
+    Step:
+      type: object
+      properties:
+        type:
+          type: string
+        protocol:
+          $ref: "#/components/schemas/Protocol"
+        chainId:
+          type: integer
+        fromAsset:
+          $ref: "#/components/schemas/Asset"
+        fromAmount:
+          type: string
+        toAsset:
+          $ref: "#/components/schemas/Asset"
+        toAmount:
+          type: string
+        swapSlippage:
+          type: integer
+        minAmountOut:
+          type: string
+        gasFees:
+          $ref: "#/components/schemas/GasFees"
+
+    UserTx:
+      type: object
+      properties:
+        userTxType:
+          type: string
+        txType:
+          type: string
+        chainId:
+          type: integer
+        toAmount:
+          type: string
+        toAsset:
+          $ref: "#/components/schemas/Asset"
+        stepCount:
+          type: integer
+        routePath:
+          type: string
+        sender:
+          type: string
+        approvalData:
+          type: object
+          properties:
+            minimumApprovalAmount:
+              type: string
+            approvalTokenAddress:
+              type: string
+            allowanceTarget:
+              type: string
+            owner:
+              type: string
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/Step"
+        gasFees:
+          $ref: "#/components/schemas/GasFees"
+        serviceTime:
+          type: integer
+        recipient:
+          type: string
+        maxServiceTime:
+          type: integer
+        bridgeSlippage:
+          type: integer
+        swapSlippage:
+          type: integer
+        userTxIndex:
+          type: integer
+
+    RouteData:
+      type: object
+      properties:
+        routeId:
+          type: string
+        isOnlySwapRoute:
+          type: boolean
+        fromAmount:
+          type: string
+        toAmount:
+          type: string
+        usedBridgeNames:
+          type: array
+          items:
+            type: string
+        minimumGasBalances:
+          type: object
+          additionalProperties:
+            type: string
+        chainGasBalances:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              minGasBalance:
+                type: string
+              hasGasBalance:
+                type: boolean
+        totalUserTx:
+          type: integer
+        sender:
+          type: string
+        recipient:
+          type: string
+        totalGasFeesInUsd:
+          type: number
+        receivedValueInUsd:
+          type: number
+        inputValueInUsd:
+          type: number
+        outputValueInUsd:
+          type: number
+        userTxs:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserTx"
+        serviceTime:
+          type: integer
+        maxServiceTime:
+          type: integer
+        integratorFee:
+          type: object
+          properties:
+            amount:
+              type: string
+            asset:
+              $ref: "#/components/schemas/Asset"
+        extraData:
+          type: object
+          properties:
+            rewards:
+              type: array
+              items:
+                type: string
+
+    Quote:
+      type: object
+      properties:
+        success:
+          type: boolean
+        result:
+          type: object
+          properties:
+            routes:
+              type: array
+              items:
+                $ref: "#/components/schemas/RouteData"
+            socketRoute:
+              type: string
+            destinationCallData:
+              type: object
+            fromChainId:
+              type: integer
+            fromAsset:
+              $ref: "#/components/schemas/Asset"
+            toChainId:
+              type: integer
+            toAsset:
+              $ref: "#/components/schemas/Asset"
+            bridgeRouteErrors:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  minAmount:
+                    type: string
+
+    Allowance:
+      type: object
+      properties:
+        success:
+          type: boolean
+        result:
+          type: object
+          properties:
+            value:
+              type: string
+            tokenAddress:
+              type: string
+
+    BridgeStatus:
+      type: object
+      properties:
+        success:
+          type: boolean
+        result:
+          type: object
+          properties:
+            destinationTransactionHash:
+              type: string
+            sourceTransactionHash:
+              type: string
+            fromChainId:
+              type: integer
+            toChainId:
+              type: integer
+            fromAsset:
+              $ref: "#/components/schemas/Asset"
+            toAsset:
+              $ref: "#/components/schemas/Asset"
+            refuel:
+              type: string
+              nullable: true
+            srcTokenPrice:
+              type: number
+              format: double
+            destTokenPrice:
+              type: number
+              format: double
+            fromAmount:
+              type: string
+            toAmount:
+              type: string
+            sender:
+              type: string
+            recipient:
+              type: string
+            isSocketTx:
+              type: boolean
+            destinationTxStatus:
+              type: string
+            sourceTxStatus:
+              type: string
+            bridgeName:
+              type: string
+
+    AssetBalance:
+      type: object
+      properties:
+        decimals:
+          type: integer
+        symbol:
+          type: string
+        name:
+          type: string
+        token_address:
+          type: string
+        balance:
+          type: string
+        logo:
+          type: string
+        native_token:
+          type: boolean
+        type:
+          type: string
+        is_spam:
+          type: boolean
+        usd_price:
+          type: integer
+
+    ChainBalance:
+      type: object
+      properties:
+        balances:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssetBalance"
+        logo:
+          type: string
+
+    Balances:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            balances:
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/ChainBalance"
+        message:
+          type: string
+
+    RouteTx:
+      type: object
+      properties:
+        route:
+          type: object
+          properties:
+            routeId:
+              type: string
+            isOnlySwapRoute:
+              type: boolean
+            fromAmount:
+              type: string
+            toAmount:
+              type: string
+            usedBridgeNames:
+              type: array
+              items:
+                type: string
+            minimumGasBalances:
+              type: object
+              additionalProperties:
+                type: string
+            chainGasBalances:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  minGasBalance:
+                    type: string
+                  hasGasBalance:
+                    type: boolean
+            totalUserTx:
+              type: integer
+            sender:
+              type: string
+            recipient:
+              type: string
+            totalGasFeesInUsd:
+              type: number
+            receivedValueInUsd:
+              type: number
+            inputValueInUsd:
+              type: number
+            outputValueInUsd:
+              type: number
+            userTxs:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserTx"
+            serviceTime:
+              type: integer
+            maxServiceTime:
+              type: integer
+            integratorFee:
+              type: object
+              properties:
+                amount:
+                  type: string
+                asset:
+                  $ref: "#/components/schemas/Asset"
+            extraData:
+              type: object
+
+    RouteTxResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: object
+          properties:
+            userTxType:
+              type: string
+              example: "fund-movr"
+            txType:
+              type: string
+              example: "eth_sendTransaction"
+            txData:
+              type: string
+              example: "0x0000018d0465bc6b0000000000000000000000000000000000000000000000000000000000000192000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000007c00000000000000000000000000000000000000000000000000000000000000724ee8f0b86000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000096a00000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000648415565b0000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000095823400000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000002e00000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000012556e697377617056330000000000000000000000000000000000000000000000000000000000000000000000009896800000000000000000000000000000000000000000000000000000000000958234000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000e592427a0aece92de3edee1f18e0157c0586156400000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002bc2132d05d31c914a87c6611c10748aeb04b58e8f0000642791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000869584cd000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000cb7b6224e8d225e5601a507b7e88808900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003800000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000099c7d0000000000000000000000000000000000000000000000000000000000626e62000000000000000000000000bb99ee59334f03eae1386e496f0103767263989d000000000000000000000000000000000000000000000000000000000000096a0000000000000000000000000000000000000000000000000000000000000100000000000000000000000000bb99ee59334f03eae1386e496f0103767263989d0000000000000000000000000000000000000000000000000000000000000000"
+            txTarget:
+              type: string
+              example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+            chainId:
+              type: integer
+              example: 137
+            userTxIndex:
+              type: integer
+              example: 0
+            value:
+              type: string
+              example: "0x00"
+            approvalData:
+              type: object
+              properties:
+                minimumApprovalAmount:
+                  type: string
+                  example: "10000000"
+                approvalTokenAddress:
+                  type: string
+                  example: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+                allowanceTarget:
+                  type: string
+                  example: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5"
+                owner:
+                  type: string
+                  example: "0xbb99ee59334f03eae1386e496f0103767263989d"
+        statusCode:
+          type: integer
+          example: 200
+
+    DepositorAddTx:
+      type: object
+      properties:
+        sourceTxHash:
+          type: string
+          example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+        destinationTxHash:
+          type: string
+          example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+        sourceChainId:
+          type: integer
+          example: 137
+        destinationChainId:
+          type: integer
+          example: 56
+
+    DepositorGetTx:
+      type: object
+      properties:
+        txHash:
+          type: string
+          example: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+        fromChainId:
+          type: integer
+          example: 137
+        toChainId:
+          type: integer
+          example: 56
+
+    DepositorGetTxResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            result:
+              type: object
+              properties:
+                destinationTransactionHash:
+                  type: string
+                  example: "0x3b333f28ab54c4f728a97577f59c90f82fd081557e17fb9ca38b34dfd85fd012"
+                sourceTransactionHash:
+                  type: string
+                  example: "0xda378afb4e974216698dc2b3f07e8548478302302034c9da45d4411697e781b4"
+                fromChainId:
+                  type: integer
+                  example: 137
+                toChainId:
+                  type: integer
+                  example: 56
+                fromAsset:
+                  $ref: "#/components/schemas/Asset"
+                toAsset:
+                  $ref: "#/components/schemas/Asset"
+                refuel:
+                  type: string
+                  nullable: true
+                srcTokenPrice:
+                  type: number
+                  format: double
+                destTokenPrice:
+                  type: number
+                  format: double
+                fromAmount:
+                  type: string
+                toAmount:
+                  type: string
+                sender:
+                  type: string
+                recipient:
+                  type: string
+                isSocketTx:
+                  type: boolean
+                destinationTxStatus:
+                  type: string
+                  example: "COMPLETED"
+                sourceTxStatus:
+                  type: string
+                  example: "COMPLETED"
+                bridgeName:
+                  type: string
+                  example: "connext"
+            statusCode:
+              type: integer
+              example: 200
+        message:
+          type: string
+          example: "Success"

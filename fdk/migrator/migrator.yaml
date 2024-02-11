@@ -1,0 +1,683 @@
+openapi: 3.0.0
+servers:
+  - description: Aarc cross-chain API
+    url: https://migrator.staging.aarc.xyz
+info:
+  description: This is the Aarc's Fund Deposit Kit API for Migration
+  version: "1.0.0"
+  title: FDK -> Migrator API
+  contact:
+    email: yash@aarc.xyz
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+paths:
+  /migrator/balances:
+    post:
+      tags:
+        - migrator
+      description: |
+        To get the token balances of an address on a specific chain.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BalancesBody"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalancesResponse"
+
+  /migrate/forward-calldata:
+    post:
+      tags:
+        - migrator
+      description: |
+        To generate the forward calldata for migration.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForwardCallDataBody"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForwardCallDataReponseBody"
+
+  /migrate/forward-calldata-trx:
+    post:
+      tags:
+        - migrator
+      description: |
+        To execute the forward calldata for migration.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteForwardCallDataBody"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecuteForwardCallDataResponse"
+
+  /migrate/gasless-calldata:
+    post:
+      tags:
+        - migrator
+      description: |
+        To generate the gasless calldata for migration.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateCalldataRequestBody"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateGaslessCalldataResponse"
+
+  /migrate/non-gasless-calldata:
+    post:
+      tags:
+        - migrator
+      description: |
+        To generate the non-gasless calldata for migration.
+      parameters:
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateCalldataRequestBody"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateNonGaslessCalldataResponse"
+
+components:
+  schemas:
+    BalancesBody:
+      type: object
+      properties:
+        address:
+          type: string
+          description: The address for which the balances are to be fetched
+          example: "0x98150396C356C55a848B2baBA6aC7614615a595b"
+        chainId:
+          type: string
+          description: The chain id for which the balances are to be fetched
+          example: "1"
+        onlyBalances:
+          type: boolean
+          description: If true, only the balances are returned else additional information is also returned
+          example: false
+
+    BalancesResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenData"
+        message:
+          type: string
+          example: "Success"
+
+    TokenData:
+      type: object
+      properties:
+        decimals:
+          type: integer
+          description: The number of decimals of the token
+          example: 6
+        native_token:
+          type: boolean
+          description: If true, the token is native to the chain
+          example: false
+        name:
+          type: string
+          description: The name of the token
+          example: "Tether USD"
+        symbol:
+          type: string
+          description: The symbol of the token
+          example: "USDT"
+        token_address:
+          type: string
+          description: The address of the token
+          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+        balance:
+          type: string
+          description: The balance of the token
+          example: "1000000000000000000"
+        type:
+          type: string
+          description: The type of the token
+          example: "stablecoin"
+        nft_data:
+          type: string
+          description: The NFT data of the token
+          nullable: true
+          example: null
+        permit2Allowance:
+          type: string
+          description: Returns when `onlyBalances` is false. The permit2Allowance of the token.
+          example: "0"
+        isGasless:
+          type: boolean
+          description: Returns when `onlyBalances` is false. If true, the token is gasless.
+          example: false
+        permitExist:
+          type: boolean
+          description: Returns when `onlyBalances` is false. If true, the token has permit.
+          example: false
+
+    ForwardCallDataBody:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: The chain id for which the forward calldata is to be generated
+          example: "137"
+        owner:
+          type: string
+          description: The owner of the tokens
+          example: "0x98150396C356C55a848B2baBA6aC7614615a595b"
+        receiverAddress:
+          type: string
+          description: The receiver address for the tokens
+          example: "0x98150396C356C55a848B2baBA6aC7614615a595b"
+        tokenList:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenAmountData"
+          description: The list of tokens to be migrated
+
+    TokenAmountData:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+          description: The address of the token
+          example: "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+        amount:
+          type: string
+          description: The amount of the token in hex string
+          example: "0x0ba43b7400"
+
+    Domain:
+      type: object
+      properties:
+        name:
+          type: string
+        chainId:
+          type: integer
+        verifyingContract:
+          type: string
+    TokenPermissions:
+      type: object
+      properties:
+        token:
+          type: string
+        amount:
+          type: string
+
+    PermitBatchTransferFrom:
+      type: array
+      items:
+        $ref: "#/components/schemas/TokenPermissions"
+    ForwardCallDataResponse:
+      type: object
+      properties:
+        tokenAddress:
+          type: array
+          items:
+            type: string
+        data:
+          type: string
+        txType:
+          type: string
+        amount:
+          type: string
+        message:
+          type: string
+        domain:
+          $ref: "#/components/schemas/Domain"
+        types:
+          type: object
+          properties:
+            PermitBatchTransferFrom:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenPermissions"
+            TokenPermissions:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenPermissions"
+        value:
+          $ref: "#/components/schemas/PermitBatchTransferFrom"
+        tokenInfo:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenPermissions"
+
+    ForwardCallDataReponseBody:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            forwardCallDataResponse:
+              type: array
+              items:
+                $ref: "#/components/schemas/ForwardCallDataResponse"
+            txIndexes:
+              type: array
+              items:
+                type: integer
+        message:
+          type: string
+
+    TrxListItem:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+        data:
+          type: string
+        txType:
+          type: string
+        amount:
+          type: string
+        message:
+          type: string
+        domain:
+          $ref: "#/components/schemas/Domain"
+        types:
+          type: object
+          properties:
+            PermitBatchTransferFrom:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+            TokenPermissions:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenPermissions"
+        value:
+          $ref: "#/components/schemas/PermitBatchTransferFrom"
+        tokenInfo:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenPermissions"
+      example: # Example based on the provided JSON
+        tokenAddress: "0x0000000000000000000000000000000000001010"
+        data: '{"permitBatchTransferFrom":{"permitted":[{"token":"0xc8c53856eb36a55b92f4b005672443ecf945fbda","amount":"49996832708"},{"token":"0xc8c53856eb36a55b92f4b005672443ecf945fbda","amount":"3167292"}],"spender":"0x75ba5af8effdcfca32e1e288806d54277d1fde99","deadline":1707229755,"nonce":5131},"tokenPermissions":[{"to":"0x786e6045eacb96cae0259cd761e151b68b85bda7","requestedAmount":"49996832708"},{"to":"0xfa59d56b4bb6bdbd28883eef1b7bdf504a124f64","requestedAmount":"3167292"}],"owner":"0x4186cac380734d5da981d702a4bfffb41bc626a6","signature":"0x8590174e8c404219eae4020bac6f0ab3c36e20fa8277540e65598e25fcd82aee6bd0d88d05c7a91a629ec7be1c82a2cd1834168f969c24f2510d6623528b958a1c"'
+        txType: "PERMIT2_BATCH"
+        amount: "0"
+        message: "Permit Batch"
+        domain:
+          name: "Permit2"
+          chainId: 137
+          verifyingContract: "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+        types:
+          PermitBatchTransferFrom:
+            - name: "permitted"
+              type: "TokenPermissions[]"
+            - name: "spender"
+              type: "address"
+            - name: "nonce"
+              type: "uint256"
+            - name: "deadline"
+              type: "uint256"
+          TokenPermissions:
+            - name: "token"
+              type: "address"
+            - name: "amount"
+              type: "uint256"
+        value:
+          permitted:
+            - token: "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+              amount: "49996832708"
+            - token: "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+              amount: "3167292"
+          spender: "0x75ba5af8effdcfca32e1e288806d54277d1fde99"
+          deadline: 1707229755
+          nonce: 5131
+        tokenInfo:
+          - tokenAddress: "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+            amount: "49996832708"
+          - tokenAddress: "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+            amount: "3167292"
+    ExecuteForwardCallDataBody:
+      type: object
+      properties:
+        chainId:
+          type: string
+        trxList:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrxListItem"
+        txIndexes:
+          type: array
+          items:
+            type: integer
+      required:
+        - chainId
+        - trxList
+        - txIndexes
+
+    ExecuteForwardCallDataResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      example:
+        code: 200
+        message: "treasury transaction is manupulated"
+
+    GenerateCalldataRequestBody:
+      type: object
+      properties:
+        chainId:
+          type: string
+          example: "137"
+        owner:
+          type: string
+          example: "0x98150396C356C55a848B2baBA6aC7614615a595b"
+        receiverAddress:
+          type: string
+          example: "0x98150396C356C55a848B2baBA6aC7614615a595b"
+
+    PermitBatchTransferItem:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+      required:
+        - name
+        - type
+
+    TransactionItem:
+      type: object
+      properties:
+        tokenAddress:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        data:
+          type: string
+        amount:
+          type: string
+        txType:
+          type: string
+        message:
+          type: string
+        domain:
+          $ref: "#/components/schemas/Domain"
+        types:
+          type: object
+          properties:
+            PermitBatchTransferFrom:
+              type: array
+              items:
+                $ref: "#/components/schemas/PermitBatchTransferItem"
+            TokenPermissions:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenPermissions"
+        value:
+          $ref: "#/components/schemas/PermitBatchTransferFrom"
+        tokenInfo:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenPermissions"
+      example:
+        tokenAddress: "0x0000000000000000000000000000000000001010"
+        data: ""
+        amount: "9922946298484695970"
+        txType: "NATIVE_TRANSFER"
+        message: "Native token transfer"
+
+    GenerateGaslessCalldataResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionItem"
+        message:
+          type: string
+      example:
+        code: 200
+        data:
+          - tokenAddress: "0x0000000000000000000000000000000000001010"
+            data: ""
+            amount: "9922946298484695970"
+            txType: "NATIVE_TRANSFER"
+            message: "Native token transfer"
+          - tokenAddress:
+              - "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+              - "0x5191950f9f0b364137d945e55e0d90bec88be48f"
+              - "0xb6d4b00f579513086be28d835293ddb74e0aabec"
+              - "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+            data: '{"permitBatchTransferFrom":{"permitted":[{"token":"0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7","amount":"6999999999999999999999999999999999999999999999999999999998500000000000000"},{"token":"0x5191950f9f0b364137d945e55e0d90bec88be48f","amount":"6000000000000000000000000000000000000000000000000000000000000000000000000"}],"spender":"0x75ba5af8effdcfca32e1e288806d54277d1fde99","deadline":1707736657,"nonce":3066}'
+            txType: "PERMIT2_BATCH"
+            amount: "0"
+            message: "Permit Batch"
+            domain:
+              name: "Permit2"
+              chainId: 137
+              verifyingContract: "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+            types:
+              PermitBatchTransferFrom:
+                - name: "permitted"
+                  type: "TokenPermissions[]"
+                - name: "spender"
+                  type: "address"
+                - name: "nonce"
+                  type: "uint256"
+                - name: "deadline"
+                  type: "uint256"
+            value:
+              permitted:
+                - token: "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+                  amount: "6999999999999999999999999999999999999999999999999999999998500000000000000"
+                - token: "0x5191950f9f0b364137d945e55e0d90bec88be48f"
+                  amount: "6000000000000000000000000000000000000000000000000000000000000000000000000"
+            tokenInfo:
+              - tokenAddress: "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+                amount: "6999999999999999999999999999999999999999999999999999999998500000000000000"
+        message: "Success"
+
+    GenerateNonGaslessCalldataResponseData:
+      type: object
+      properties:
+        tokenAddress:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        data:
+          type: string
+        amount:
+          type: string
+        txType:
+          type: string
+        message:
+          type: string
+        domain:
+          $ref: "#/components/schemas/Domain"
+        types:
+          type: object
+          properties:
+            PermitBatchTransferFrom:
+              type: array
+              items:
+                $ref: "#/components/schemas/PermitBatchTransferItem"
+            TokenPermissions:
+              type: array
+              items:
+                $ref: "#/components/schemas/TokenPermissions"
+        value:
+          $ref: "#/components/schemas/TransactionValue"
+        tokenInfo:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenInfo"
+      example: # Provide an example for better understanding
+        - tokenAddress: "0x0000000000000000000000000000000000001010"
+          data: ""
+          amount: "9922946298484695970"
+          txType: "NATIVE_TRANSFER"
+          message: "Native token transfer"
+        - tokenAddress:
+            - "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+            - "0x0000000000000000000000000000000000001010"
+          data: '{"permitBatchTransferFrom":{"permitted":[{"token":"0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7","amount":"6999999999999999999999999999999999999999999999999999999998500000000000000"}]}}'
+          amount: "0"
+          txType: "PERMIT2_BATCH"
+          message: "Permit Batch"
+          domain:
+            name: "Permit2"
+            chainId: 137
+            verifyingContract: "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+          types:
+            PermitBatchTransferFrom:
+              - name: "permitted"
+                type: "TokenPermissions[]"
+              - name: "spender"
+                type: "address"
+              - name: "nonce"
+                type: "uint256"
+              - name: "deadline"
+                type: "uint256"
+            TokenPermissions:
+              - name: "token"
+                type: "address"
+              - name: "amount"
+                type: "uint256"
+          value:
+            permitted:
+              - token: "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+                amount: "6999999999999999999999999999999999999999999999999999999998500000000000000"
+            spender: "0x75ba5af8effdcfca32e1e288806d54277d1fde99"
+            deadline: 1707739931
+            nonce: 9690
+          tokenInfo:
+            - tokenAddress: "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+              amount: "6999999999999999999999999999999999999999999999999999999998500000000000000"
+
+    TransactionValue:
+      type: object
+      properties:
+        permitted:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenPermissions"
+        spender:
+          type: string
+        deadline:
+          type: integer
+        nonce:
+          type: integer
+
+    TokenInfo:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+        amount:
+          type: string
+      required:
+        - tokenAddress
+        - amount
+
+    GenerateNonGaslessCalldataResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/GenerateNonGaslessCalldataResponseData"
+        message:
+          type: string
+      required:
+        - code
+        - data
+        - message
