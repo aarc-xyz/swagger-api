@@ -128,7 +128,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExecuteForwardCallDataBody"
+                "$ref": "#/components/schemas/ExecuteCallDataRequestBody"
               }
             }
           },
@@ -140,7 +140,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExecuteForwardCallDataResponse"
+                  "$ref": "#/components/schemas/ExecuteCallDataResponseBody"
                 }
               }
             }
@@ -183,7 +183,50 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenerateGaslessCalldataResponse"
+                  "$ref": "#/components/schemas/GenerateCalldataResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/migrate/gasless-calldata-trx": {
+      "post": {
+        "tags": [
+          "migrator"
+        ],
+        "description": "To execute the gasless calldata for migration.\n",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Aarc API Key",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecuteCallDataRequestBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteCallDataResponseBody"
                 }
               }
             }
@@ -226,7 +269,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenerateNonGaslessCalldataResponse"
+                  "$ref": "#/components/schemas/GenerateCalldataResponseBody"
                 }
               }
             }
@@ -395,6 +438,17 @@
       "TokenPermissions": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "PermittedTokenValueItem": {
+        "type": "object",
+        "properties": {
           "token": {
             "type": "string"
           },
@@ -403,15 +457,23 @@
           }
         }
       },
-      "PermitBatchTransferFrom": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/TokenPermissions"
-        }
-      },
-      "ForwardCallDataResponse": {
+      "TokenInfoItem": {
         "type": "object",
         "properties": {
+          "tokenAddress": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          }
+        }
+      },
+      "PermitBatch": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
           "tokenAddress": {
             "type": "array",
             "items": {
@@ -430,20 +492,92 @@
           "message": {
             "type": "string"
           },
-          "domain": {
-            "$ref": "#/components/schemas/Domain"
-          },
-          "types": {
-            "$ref": "#/components/schemas/ForwardCallDataResponse_types"
-          },
-          "value": {
-            "$ref": "#/components/schemas/PermitBatchTransferFrom"
+          "eip712Struct": {
+            "$ref": "#/components/schemas/Eip712Struct"
           },
           "tokenInfo": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
+              "$ref": "#/components/schemas/TokenInfoItem"
             }
+          }
+        }
+      },
+      "ExecuteCalldatTrxListItem": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "tokenAddress": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "eip712Struct": {
+            "$ref": "#/components/schemas/Eip712Struct"
+          }
+        }
+      },
+      "ERC20Transfer": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "tokenAddress": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "NativeTransfer": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "tokenAddress": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
           }
         }
       },
@@ -459,115 +593,120 @@
           "message": {
             "type": "string"
           }
+        },
+        "example": {
+          "code": 200,
+          "data": {
+            "forwardCallDataResponse": [
+              {
+                "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "tokenAddress": [
+                  "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                  "0xc8c53856eb36a55b92f4b005672443ecf945fbda"
+                ],
+                "data": "{\"permitBatchTransferFrom\":{\"permitted\":[{\"token\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"amount\":\"49997809030\"},{\"token\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"amount\":\"2190970\"}],\"spender\":\"0x75ba5af8effdcfca32e1e288806d54277d1fde99\",\"deadline\":1707830776,\"nonce\":4564},\"tokenPermissions\":[{\"to\":\"0x786e6045eacb96cae0259cd761e151b68b85bda7\",\"requestedAmount\":\"49997809030\"},{\"to\":\"0xfa59d56b4bb6bdbd28883eef1b7bdf504a124f64\",\"requestedAmount\":\"2190970\"}],\"owner\":\"0x4186cac380734d5da981d702a4bfffb41bc626a6\"}",
+                "txType": "PERMIT2_BATCH",
+                "amount": "0",
+                "message": "Permit Batch",
+                "eip712Struct": {
+                  "domain": {
+                    "name": "Permit2",
+                    "chainId": 137,
+                    "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+                  },
+                  "types": {
+                    "PermitBatchTransferFrom": [
+                      {
+                        "name": "permitted",
+                        "type": "TokenPermissions[]"
+                      },
+                      {
+                        "name": "spender",
+                        "type": "address"
+                      },
+                      {
+                        "name": "nonce",
+                        "type": "uint256"
+                      },
+                      {
+                        "name": "deadline",
+                        "type": "uint256"
+                      }
+                    ],
+                    "TokenPermissions": [
+                      {
+                        "name": "token",
+                        "type": "address"
+                      },
+                      {
+                        "name": "amount",
+                        "type": "uint256"
+                      }
+                    ]
+                  },
+                  "value": {
+                    "permitted": [
+                      {
+                        "token": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                        "amount": "49997809030"
+                      },
+                      {
+                        "token": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                        "amount": "2190970"
+                      }
+                    ],
+                    "spender": "0x75ba5af8effdcfca32e1e288806d54277d1fde99",
+                    "deadline": 1707830776,
+                    "nonce": 4564
+                  }
+                },
+                "tokenInfo": [
+                  {
+                    "tokenAddress": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                    "amount": "49997809030"
+                  },
+                  {
+                    "tokenAddress": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                    "amount": "2190970"
+                  }
+                ]
+              },
+              {
+                "target": "",
+                "tokenAddress": [
+                  "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7"
+                ],
+                "data": "",
+                "txType": "ERC20_TRANSFER",
+                "amount": "0x0110d9316ec000",
+                "message": "Token not supported for forward"
+              }
+            ],
+            "txIndexes": [
+              1
+            ]
+          },
+          "message": "Success"
         }
       },
-      "TrxListItem": {
+      "Eip712Struct": {
         "type": "object",
         "properties": {
-          "tokenAddress": {
-            "type": "string"
-          },
-          "data": {
-            "type": "string"
-          },
-          "txType": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
           "domain": {
             "$ref": "#/components/schemas/Domain"
           },
           "types": {
-            "$ref": "#/components/schemas/TrxListItem_types"
+            "$ref": "#/components/schemas/Eip712Struct_types"
           },
           "value": {
-            "$ref": "#/components/schemas/PermitBatchTransferFrom"
-          },
-          "tokenInfo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
+            "$ref": "#/components/schemas/Eip712Struct_value"
           }
-        },
-        "example": {
-          "tokenAddress": "0x0000000000000000000000000000000000001010",
-          "data": "{\"permitBatchTransferFrom\":{\"permitted\":[{\"token\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"amount\":\"49996832708\"},{\"token\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"amount\":\"3167292\"}],\"spender\":\"0x75ba5af8effdcfca32e1e288806d54277d1fde99\",\"deadline\":1707229755,\"nonce\":5131},\"tokenPermissions\":[{\"to\":\"0x786e6045eacb96cae0259cd761e151b68b85bda7\",\"requestedAmount\":\"49996832708\"},{\"to\":\"0xfa59d56b4bb6bdbd28883eef1b7bdf504a124f64\",\"requestedAmount\":\"3167292\"}],\"owner\":\"0x4186cac380734d5da981d702a4bfffb41bc626a6\",\"signature\":\"0x8590174e8c404219eae4020bac6f0ab3c36e20fa8277540e65598e25fcd82aee6bd0d88d05c7a91a629ec7be1c82a2cd1834168f969c24f2510d6623528b958a1c\"",
-          "txType": "PERMIT2_BATCH",
-          "amount": "0",
-          "message": "Permit Batch",
-          "domain": {
-            "name": "Permit2",
-            "chainId": 137,
-            "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
-          },
-          "types": {
-            "PermitBatchTransferFrom": [
-              {
-                "name": "permitted",
-                "type": "TokenPermissions[]"
-              },
-              {
-                "name": "spender",
-                "type": "address"
-              },
-              {
-                "name": "nonce",
-                "type": "uint256"
-              },
-              {
-                "name": "deadline",
-                "type": "uint256"
-              }
-            ],
-            "TokenPermissions": [
-              {
-                "name": "token",
-                "type": "address"
-              },
-              {
-                "name": "amount",
-                "type": "uint256"
-              }
-            ]
-          },
-          "value": {
-            "permitted": [
-              {
-                "token": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
-                "amount": "49996832708"
-              },
-              {
-                "token": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
-                "amount": "3167292"
-              }
-            ],
-            "spender": "0x75ba5af8effdcfca32e1e288806d54277d1fde99",
-            "deadline": 1707229755,
-            "nonce": 5131
-          },
-          "tokenInfo": [
-            {
-              "tokenAddress": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
-              "amount": "49996832708"
-            },
-            {
-              "tokenAddress": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
-              "amount": "3167292"
-            }
-          ]
         }
       },
-      "ExecuteForwardCallDataBody": {
+      "ExecuteCallDataRequestBody": {
         "required": [
           "chainId",
-          "trxList",
-          "txIndexes"
+          "trxList"
         ],
         "type": "object",
         "properties": {
@@ -577,18 +716,93 @@
           "trxList": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TrxListItem"
+              "$ref": "#/components/schemas/ExecuteCalldatTrxListItem"
             }
+          }
+        },
+        "example": {
+          "trxList": [
+            {
+              "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "tokenAddress": [
+                "0x0000000000000000000000000000000000001010"
+              ],
+              "data": "{\"permitBatchTransferFrom\":{\"permitted\":[{\"token\":\"0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7\",\"amount\":\"300000000000000\"},{\"token\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"amount\":\"50000000000\"}],\"spender\":\"0x75ba5af8effdcfca32e1e288806d54277d1fde99\",\"deadline\":1707235435,\"nonce\":4042},\"tokenPermissions\":[{\"to\":\"0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7\",\"requestedAmount\":\"300000000000000\"},{\"to\":\"0xc8c53856eb36a55b92f4b005672443ecf945fbda\",\"requestedAmount\":\"50000000000\"}],\"owner\":\"0x4186cac380734d5da981d702a4bfffb41bc626a6\",\"signature\":\"0xca733fd70e5c2d1b221a424866dbaf791a390b0b207702906529d8cb85b40c0c64956ea593a5aa807f60df675658f03371ecf812beee997ae0bc417368679aef1c\"}",
+              "txType": "PERMIT2_BATCH",
+              "amount": "0",
+              "message": "Permit Batch",
+              "eip712Struct": {
+                "domain": {
+                  "name": "Permit2",
+                  "chainId": 137,
+                  "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+                },
+                "types": {
+                  "PermitBatchTransferFrom": [
+                    {
+                      "name": "permitted",
+                      "type": "TokenPermissions[]"
+                    },
+                    {
+                      "name": "spender",
+                      "type": "address"
+                    },
+                    {
+                      "name": "nonce",
+                      "type": "uint256"
+                    },
+                    {
+                      "name": "deadline",
+                      "type": "uint256"
+                    }
+                  ],
+                  "TokenPermissions": [
+                    {
+                      "name": "token",
+                      "type": "address"
+                    },
+                    {
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ]
+                },
+                "value": {
+                  "permitted": [
+                    {
+                      "token": "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7",
+                      "amount": "300000000000000"
+                    },
+                    {
+                      "token": "0xc8c53856eb36a55b92f4b005672443ecf945fbda",
+                      "amount": "50000000000"
+                    }
+                  ],
+                  "spender": "0x75ba5af8effdcfca32e1e288806d54277d1fde99",
+                  "deadline": 1707235435,
+                  "nonce": 4042
+                }
+              }
+            }
+          ],
+          "chainId": "137"
+        }
+      },
+      "ExecuteCallDataResponseBodyDataItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
           },
-          "txIndexes": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            }
+          "taskId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
           }
         }
       },
-      "ExecuteForwardCallDataResponse": {
+      "ExecuteCallDataResponseBody": {
         "type": "object",
         "properties": {
           "code": {
@@ -596,31 +810,46 @@
           },
           "message": {
             "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecuteCallDataResponseBodyDataItem"
+            }
           }
         },
         "example": {
           "code": 200,
-          "message": "treasury transaction is manupulated"
+          "data": [
+            {
+              "type": "PERMIT2_BATCH",
+              "taskId": "1b9a02f4-ffbb-46be-8a5b-9475d412d2ab",
+              "status": "Transaction Added to Queue"
+            }
+          ],
+          "message": "success"
         }
       },
       "GenerateCalldataRequestBody": {
         "type": "object",
         "properties": {
           "chainId": {
-            "type": "string",
-            "example": "137"
+            "type": "string"
           },
           "owner": {
-            "type": "string",
-            "example": "0x98150396C356C55a848B2baBA6aC7614615a595b"
+            "type": "string"
           },
           "receiverAddress": {
-            "type": "string",
-            "example": "0x98150396C356C55a848B2baBA6aC7614615a595b"
+            "type": "string"
           }
+        },
+        "example": {
+          "chainId": 137,
+          "owner": 3.740903631677123e+47,
+          "receiverAddress": 6.8754036104172835e+47
         }
       },
-      "PermitBatchTransferItem": {
+      "PermitBatchTransferFromItem": {
         "required": [
           "name",
           "type"
@@ -635,59 +864,7 @@
           }
         }
       },
-      "TransactionItem": {
-        "type": "object",
-        "properties": {
-          "tokenAddress": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
-          },
-          "data": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "string"
-          },
-          "txType": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "domain": {
-            "$ref": "#/components/schemas/Domain"
-          },
-          "types": {
-            "$ref": "#/components/schemas/TransactionItem_types"
-          },
-          "value": {
-            "$ref": "#/components/schemas/PermitBatchTransferFrom"
-          },
-          "tokenInfo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
-          }
-        },
-        "example": {
-          "tokenAddress": "0x0000000000000000000000000000000000001010",
-          "data": "",
-          "amount": "9922946298484695970",
-          "txType": "NATIVE_TRANSFER",
-          "message": "Native token transfer"
-        }
-      },
-      "GenerateGaslessCalldataResponse": {
+      "GenerateCalldataResponseBody": {
         "type": "object",
         "properties": {
           "code": {
@@ -696,7 +873,14 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TransactionItem"
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/NativeTransfer"
+                },
+                {
+                  "$ref": "#/components/schemas/PermitBatch"
+                }
+              ]
             }
           },
           "message": {
@@ -772,203 +956,20 @@
           "message": "Success"
         }
       },
-      "GenerateNonGaslessCalldataResponseData": {
-        "type": "object",
-        "properties": {
-          "tokenAddress": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
-          },
-          "data": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "string"
-          },
-          "txType": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "domain": {
-            "$ref": "#/components/schemas/Domain"
-          },
-          "types": {
-            "$ref": "#/components/schemas/TransactionItem_types"
-          },
-          "value": {
-            "$ref": "#/components/schemas/TransactionValue"
-          },
-          "tokenInfo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenInfo"
-            }
-          }
-        },
-        "example": [
-          {
-            "tokenAddress": "0x0000000000000000000000000000000000001010",
-            "data": "",
-            "amount": "9922946298484695970",
-            "txType": "NATIVE_TRANSFER",
-            "message": "Native token transfer"
-          },
-          {
-            "tokenAddress": [
-              "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7",
-              "0x0000000000000000000000000000000000001010"
-            ],
-            "data": "{\"permitBatchTransferFrom\":{\"permitted\":[{\"token\":\"0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7\",\"amount\":\"6999999999999999999999999999999999999999999999999999999998500000000000000\"}]}}",
-            "amount": "0",
-            "txType": "PERMIT2_BATCH",
-            "message": "Permit Batch",
-            "domain": {
-              "name": "Permit2",
-              "chainId": 137,
-              "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
-            },
-            "types": {
-              "PermitBatchTransferFrom": [
-                {
-                  "name": "permitted",
-                  "type": "TokenPermissions[]"
-                },
-                {
-                  "name": "spender",
-                  "type": "address"
-                },
-                {
-                  "name": "nonce",
-                  "type": "uint256"
-                },
-                {
-                  "name": "deadline",
-                  "type": "uint256"
-                }
-              ],
-              "TokenPermissions": [
-                {
-                  "name": "token",
-                  "type": "address"
-                },
-                {
-                  "name": "amount",
-                  "type": "uint256"
-                }
-              ]
-            },
-            "value": {
-              "permitted": [
-                {
-                  "token": "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7",
-                  "amount": "6999999999999999999999999999999999999999999999999999999998500000000000000"
-                }
-              ],
-              "spender": "0x75ba5af8effdcfca32e1e288806d54277d1fde99",
-              "deadline": 1707739931,
-              "nonce": 9690
-            },
-            "tokenInfo": [
-              {
-                "tokenAddress": "0x0537a0f2e1373886a3d4f0e2b24c026ffa6f16f7",
-                "amount": "6999999999999999999999999999999999999999999999999999999998500000000000000"
-              }
-            ]
-          }
-        ]
-      },
-      "TransactionValue": {
-        "type": "object",
-        "properties": {
-          "permitted": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
-          },
-          "spender": {
-            "type": "string"
-          },
-          "deadline": {
-            "type": "integer"
-          },
-          "nonce": {
-            "type": "integer"
-          }
-        }
-      },
-      "TokenInfo": {
-        "required": [
-          "amount",
-          "tokenAddress"
-        ],
-        "type": "object",
-        "properties": {
-          "tokenAddress": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "string"
-          }
-        }
-      },
-      "GenerateNonGaslessCalldataResponse": {
-        "required": [
-          "code",
-          "data",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GenerateNonGaslessCalldataResponseData"
-            }
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "ForwardCallDataResponse_types": {
-        "type": "object",
-        "properties": {
-          "PermitBatchTransferFrom": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
-          },
-          "TokenPermissions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
-          }
-        }
-      },
       "ForwardCallDataReponseBody_data": {
         "type": "object",
         "properties": {
           "forwardCallDataResponse": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ForwardCallDataResponse"
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/PermitBatch"
+                },
+                {
+                  "$ref": "#/components/schemas/ERC20Transfer"
+                }
+              ]
             }
           },
           "txIndexes": {
@@ -979,24 +980,13 @@
           }
         }
       },
-      "TrxListItem_types_PermitBatchTransferFrom": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          }
-        }
-      },
-      "TrxListItem_types": {
+      "Eip712Struct_types": {
         "type": "object",
         "properties": {
           "PermitBatchTransferFrom": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TrxListItem_types_PermitBatchTransferFrom"
+              "$ref": "#/components/schemas/PermitBatchTransferFromItem"
             }
           },
           "TokenPermissions": {
@@ -1007,20 +997,23 @@
           }
         }
       },
-      "TransactionItem_types": {
+      "Eip712Struct_value": {
         "type": "object",
         "properties": {
-          "PermitBatchTransferFrom": {
+          "permitted": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PermitBatchTransferItem"
+              "$ref": "#/components/schemas/PermittedTokenValueItem"
             }
           },
-          "TokenPermissions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TokenPermissions"
-            }
+          "spender": {
+            "type": "string"
+          },
+          "deadline": {
+            "type": "integer"
+          },
+          "nonce": {
+            "type": "integer"
           }
         }
       }
