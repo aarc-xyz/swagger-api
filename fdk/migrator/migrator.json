@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "https://migrator.staging.aarc.xyz",
+      "url": "https://migrator.aarc.xyz",
       "description": "Aarc cross-chain API"
     }
   ],
