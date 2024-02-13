@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "FDK-> Cross Chain",
+    "title": "Fund Deposit Kit API",
     "description": "This is the Aarc's Fund Deposit Kit API for cross-chain transactions.",
     "contact": {
       "email": "yash@aarc.xyz"
@@ -304,6 +304,17 @@
             "name": "routeType",
             "in": "query",
             "description": "This defines the type of route to fetch.`RouteType.Value`, which will return max output on destination. `RouteType.Output`, which has the fastest time to transfer tokens.`RouteType.Gas`, which is going to incur the least gas.",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipient",
+            "in": "query",
+            "description": "Receiver Address",
             "required": true,
             "style": "form",
             "explode": true,

@@ -189,6 +189,12 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: recipient
+          description: Receiver Address
+          required: true
+          schema:
+            type: string
         - in: header
           name: x-api-key
           description: Aarc API Key
