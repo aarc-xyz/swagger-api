@@ -548,9 +548,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ExecuteCalldatTrxListItem"
+        txIndexes:
+          type: array
+          items:
+            type: integer
       required:
         - chainId
         - trxList
+        - txIndexes
       example:
         {
           "trxList":
@@ -609,6 +614,7 @@ components:
               },
             ],
           "chainId": "137",
+          "txIndexes": [1],
         }
 
     ExecuteCallDataResponseBodyDataItem:

@@ -706,7 +706,8 @@
       "ExecuteCallDataRequestBody": {
         "required": [
           "chainId",
-          "trxList"
+          "trxList",
+          "txIndexes"
         ],
         "type": "object",
         "properties": {
@@ -717,6 +718,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ExecuteCalldatTrxListItem"
+            }
+          },
+          "txIndexes": {
+            "type": "array",
+            "items": {
+              "type": "integer"
             }
           }
         },
@@ -785,7 +792,10 @@
               }
             }
           ],
-          "chainId": "137"
+          "chainId": "137",
+          "txIndexes": [
+            1
+          ]
         }
       },
       "ExecuteCallDataResponseBodyDataItem": {
