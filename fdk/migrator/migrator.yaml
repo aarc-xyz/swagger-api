@@ -287,7 +287,7 @@ components:
         amount:
           type: string
           description: The amount of the token in hex string
-          example: "0x0ba43b7400"
+          example: "10000000000"
 
     Domain:
       type: object
@@ -654,9 +654,9 @@ components:
         receiverAddress:
           type: string
       example:
-        chainId: 137
-        owner: 0x4186CaC380734D5dA981D702a4bFfFB41Bc626a6
-        receiverAddress: 0x786E6045eacb96cAe0259cd761e151b68B85bdA7
+        chainId: "137"
+        owner: "0x4186CaC380734D5dA981D702a4bFfFB41Bc626a6"
+        receiverAddress: "0x786E6045eacb96cAe0259cd761e151b68B85bdA7"
 
     PermitBatchTransferFromItem:
       type: object

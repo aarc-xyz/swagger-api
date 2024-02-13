@@ -417,7 +417,7 @@
           "amount": {
             "type": "string",
             "description": "The amount of the token in hex string",
-            "example": "0x0ba43b7400"
+            "example": "10000000000"
           }
         }
       },
@@ -844,9 +844,9 @@
           }
         },
         "example": {
-          "chainId": 137,
-          "owner": 3.740903631677123e+47,
-          "receiverAddress": 6.8754036104172835e+47
+          "chainId": "137",
+          "owner": "0x4186CaC380734D5dA981D702a4bFfFB41Bc626a6",
+          "receiverAddress": "0x786E6045eacb96cAe0259cd761e151b68B85bdA7"
         }
       },
       "PermitBatchTransferFromItem": {
