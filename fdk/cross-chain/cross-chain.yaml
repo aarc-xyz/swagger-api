@@ -1,11 +1,11 @@
 openapi: 3.0.0
 servers:
   - description: Aarc cross-chain API
-    url: https://bridge-swap.aarc.xyz/bridge-swap
+    url: https://bridge-swap.aarc.xyz
 info:
   description: This is the Aarc's Fund Deposit Kit API for cross-chain transactions.
   version: "1.0.0"
-  title: Fund Deposit Kit API
+  title: FDK -> Cross-Chain API
   contact:
     email: yash@aarc.xyz
   license:
@@ -13,7 +13,7 @@ info:
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
 paths:
-  /supported-tokens:
+  /bridge-swap/supported-tokens:
     get:
       tags:
         - cross-chain
@@ -56,7 +56,7 @@ paths:
                     decimals: 18
                     logoURI: https://assets.polygon.technology/tokenAssets/amp.svg
 
-  /token-supported:
+  /bridge-swap/token-supported:
     get:
       tags:
         - cross-chain
@@ -98,7 +98,7 @@ paths:
                   decimals: 18
                   logoURI: https://assets.polygon.technology/tokenAssets/amp.svg
 
-  /supported-chains:
+  /bridge-swap/supported-chains:
     get:
       tags:
         - cross-chain
@@ -141,7 +141,7 @@ paths:
                     rpcs: ["https://rpc.ankr.com/eth"]
                     explorers: ["https://etherscan.io"]
 
-  /quote:
+  /bridge-swap/quote:
     get:
       tags:
         - cross-chain
@@ -399,7 +399,7 @@ paths:
                       },
                   }
 
-  /allowance:
+  /bridge-swap/allowance:
     get:
       tags:
         - cross-chain
@@ -450,7 +450,59 @@ paths:
                   value: "1000000000000000000"
                   tokenAddress: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
 
-  /bridge-status:
+  /bridge-swap/approval-transaction-data:
+    get:
+      tags:
+        - cross-chain
+      description: To get the apporval transaction data to allow the spender to spend the owner's asset.
+      parameters:
+        - in: query
+          name: chainId
+          schema:
+            type: integer
+          required: true
+          example: 137
+        - in: query
+          name: owner
+          schema:
+            type: string
+          required: true
+          example: "0xbb99ee59334f03eae1386e496f0103767263989d"
+        - in: query
+          name: allowanceTarget
+          schema:
+            type: string
+          required: true
+          example: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5"
+        - in: query
+          name: tokenAddress
+          schema:
+            type: string
+          required: true
+          example: "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+        - in: query
+          name: amount
+          schema:
+            type: number
+          required: true
+          example: 10000000
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/ApprovalTxnDataResponseBody"
+                example:
+                  success: true
+                  result:
+                    data: "0x095ea7b30000000000000000000000003a23f943181408eac424116af7b7790c94cb97a50000000000000000000000000000000000000000000000000000000000989680"
+                    to: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+                    from: "0xBB99eE59334f03eaE1386e496f0103767263989D"
+
+  /bridge-swap/bridge-status:
     get:
       tags:
         - cross-chain
@@ -526,7 +578,7 @@ paths:
                   sourceTxStatus: "COMPLETED"
                   bridgeName: "connext"
 
-  /balances/{walletAddress}:
+  /bridge-swap/balances/{walletAddress}:
     get:
       tags:
         - cross-chain
@@ -572,7 +624,7 @@ paths:
                       logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
                 message: "Success"
 
-  /route-transaction-data:
+  /bridge-swap/route-transaction-data:
     post:
       tags:
         - cross-chain
@@ -598,7 +650,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/RouteTxResponse"
 
-  /tx:
+  /bridge-swap/tx:
     post:
       tags:
         - cross-chain
@@ -631,7 +683,7 @@ paths:
                     type: string
                     example: "Success"
 
-  /tx-detail:
+  /bridge-swap/tx-detail:
     post:
       tags:
         - cross-chain
@@ -1349,3 +1401,19 @@ components:
         message:
           type: string
           example: "Success"
+
+    ApprovalTxnDataResponseBody:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        result:
+          type: object
+          properties:
+            data:
+              type: string
+            to:
+              type: string
+            from:
+              type: string

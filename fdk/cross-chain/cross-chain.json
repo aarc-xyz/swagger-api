@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Fund Deposit Kit API",
+    "title": "FDK -> Cross-Chain API",
     "description": "This is the Aarc's Fund Deposit Kit API for cross-chain transactions.",
     "contact": {
       "email": "yash@aarc.xyz"
@@ -14,12 +14,12 @@
   },
   "servers": [
     {
-      "url": "https://bridge-swap.aarc.xyz/bridge-swap",
+      "url": "https://bridge-swap.aarc.xyz",
       "description": "Aarc cross-chain API"
     }
   ],
   "paths": {
-    "/supported-tokens": {
+    "/bridge-swap/supported-tokens": {
       "get": {
         "tags": [
           "cross-chain"
@@ -91,7 +91,7 @@
         }
       }
     },
-    "/token-supported": {
+    "/bridge-swap/token-supported": {
       "get": {
         "tags": [
           "cross-chain"
@@ -160,7 +160,7 @@
         }
       }
     },
-    "/supported-chains": {
+    "/bridge-swap/supported-chains": {
       "get": {
         "tags": [
           "cross-chain"
@@ -227,7 +227,7 @@
         }
       }
     },
-    "/quote": {
+    "/bridge-swap/quote": {
       "get": {
         "tags": [
           "cross-chain"
@@ -542,7 +542,7 @@
         }
       }
     },
-    "/allowance": {
+    "/bridge-swap/allowance": {
       "get": {
         "tags": [
           "cross-chain"
@@ -629,7 +629,95 @@
         }
       }
     },
-    "/bridge-status": {
+    "/bridge-swap/approval-transaction-data": {
+      "get": {
+        "tags": [
+          "cross-chain"
+        ],
+        "description": "To get the apporval transaction data to allow the spender to spend the owner's asset.",
+        "parameters": [
+          {
+            "name": "chainId",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 137
+          },
+          {
+            "name": "owner",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "0xbb99ee59334f03eae1386e496f0103767263989d"
+          },
+          {
+            "name": "allowanceTarget",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5"
+          },
+          {
+            "name": "tokenAddress",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 10000000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "example": {
+                    "success": true,
+                    "result": {
+                      "data": "0x095ea7b30000000000000000000000003a23f943181408eac424116af7b7790c94cb97a50000000000000000000000000000000000000000000000000000000000989680",
+                      "to": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+                      "from": "0xBB99eE59334f03eaE1386e496f0103767263989D"
+                    }
+                  },
+                  "items": {
+                    "$ref": "#/components/schemas/ApprovalTxnDataResponseBody"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bridge-swap/bridge-status": {
       "get": {
         "tags": [
           "cross-chain"
@@ -737,7 +825,7 @@
         }
       }
     },
-    "/balances/{walletAddress}": {
+    "/bridge-swap/balances/{walletAddress}": {
       "get": {
         "tags": [
           "cross-chain"
@@ -809,7 +897,7 @@
         }
       }
     },
-    "/route-transaction-data": {
+    "/bridge-swap/route-transaction-data": {
       "post": {
         "tags": [
           "cross-chain"
@@ -852,7 +940,7 @@
         }
       }
     },
-    "/tx": {
+    "/bridge-swap/tx": {
       "post": {
         "tags": [
           "cross-chain"
@@ -895,7 +983,7 @@
         }
       }
     },
-    "/tx-detail": {
+    "/bridge-swap/tx-detail": {
       "post": {
         "tags": [
           "cross-chain"
@@ -1488,6 +1576,18 @@
           }
         }
       },
+      "ApprovalTxnDataResponseBody": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "result": {
+            "$ref": "#/components/schemas/ApprovalTxnDataResponseBody_result"
+          }
+        }
+      },
       "inline_response_200": {
         "type": "object",
         "properties": {
@@ -1975,6 +2075,20 @@
           "statusCode": {
             "type": "integer",
             "example": 200
+          }
+        }
+      },
+      "ApprovalTxnDataResponseBody_result": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
           }
         }
       }
