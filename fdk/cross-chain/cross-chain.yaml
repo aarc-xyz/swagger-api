@@ -13,6 +13,113 @@ info:
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
 paths:
+  /bridge-swap/deposit-calldata:
+    get:
+      tags:
+        - cross-chain
+      description: To get the deposit call data for the provided parameters.
+      parameters:
+        - in: query
+          name: fromChainId
+          description: chain Id of the source network
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: fromTokenAddress
+          description: address of the intial token on the source chain.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: toChainId
+          description: chain Id of the destination network
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: toTokenAddress
+          description: address of the final token on the destination chain.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: fromAmount
+          description: amount of the initial token
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: userAddress
+          description: address of the user
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: recipient
+          description: Receiver Address on the detination chain.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: destinationPayload
+          description: If you want to interact with the contract directly. **NOTE** If using this, then the recipient should be the contract addresss.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: destinationGasLimit
+          description: The gas limit on the destination chain.
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: routeType
+          description: The type of route to be preferred. It can be `Value`,`Fee` and `Time`.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: estimateGas
+          description: Default is set to `true`. If you don't want to estimate gas on the backend. 
+          required: false
+          schema:
+            type: boolean
+        - in: header
+          name: x-api-key
+          description: Aarc API Key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/DepositCalldataResponseBody"
+              example:
+                success: true
+                data:
+                  approvalTxs:
+                    - chainId: 137
+                      minimumApprovalAmount: "1000000000000000000"
+                      approvalTokenAddress: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                      allowanceTarget: "0x3a23F943181408EAC424116Af7b7790c94Cb97a5"
+                      owner: "0xbb99ee59334f03eae1386e496f0103767263989d"
+                      txType: "ERC20_Approval"
+                      callData: "0x095ea7b30000000000000000000000003a23f943181408eac424116af7b7790c94cb97a50000000000000000000000000000000000000000000000000000000000989680"
+                      gasLimit: "21000"
+                  executionTxs:
+                    - chainId: 137
+                      txData: "0x000001933e508058000000000000000000000000000000000000000000000000000000000000019200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000007d4f6d64d6702eb766332b57af8da8a1b77c89ea0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000000000000000000000000000000000000013504d000000000000000000000000000000000000000000000000000000000000096a0000000000000000000000000000000000000000000000000000000000000724ee8f0b86000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000003c499c542cef5e3811e1192ce70d8cc03d5c335900000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000000000000000000000000000000000000000096a00000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000648415565b0000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000003c499c542cef5e3811e1192ce70d8cc03d5c335900000000000000000000000000000000000000000000000000000000001e848000000000000000000000000000000000000000000000000000000000001deb9e00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000036000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f0000000000000000000000003c499c542cef5e3811e1192ce70d8cc03d5c335900000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000002e000000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000012556e697377617056330000000000000000000000000000000000000000000000000000000000000000000000001e848000000000000000000000000000000000000000000000000000000000001deb9e000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000e592427a0aece92de3edee1f18e0157c0586156400000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002bc2132d05d31c914a87c6611c10748aeb04b58e8f0000643c499c542cef5e3811e1192ce70d8cc03d5c3359000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000005b8c985bf4c7b23ff1d812072141b16900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                      txTarget: "0x0621d647cecbfb64b79e44302c1933cb4f27054d"
+                      txType: "DEPOSIT"
+                      value: "0x00"
+                      gasLimit: "10000000"
+                      
   /bridge-swap/supported-tokens:
     get:
       tags:
@@ -1417,3 +1524,57 @@ components:
               type: string
             from:
               type: string
+    
+    DepositCalldataResponseBody:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        data: 
+          type: object
+          properties:
+            approvalTxs:
+              type: array
+              items:
+                $ref: "#/components/schemas/DepositCalldataApproveTxItem"
+            executionTxs:
+              type: array
+              items:
+                $ref: "#/components/schemas/DepositCalldataExecutionTxItem"
+
+    DepositCalldataApproveTxItem:
+      type: object
+      properties:
+        chainId:
+          type: integer
+        minimumApprovalAmount:
+          type: string
+        approvalTokenAddress:
+          type: string
+        allowanceTarget:
+          type: string
+        txType:
+          type: string
+        owner:
+          type: string
+        calldata:
+          type: string
+        gasLimit:
+          type: string
+
+    DepositCalldataExecutionTxItem:
+      type: object
+      properties:
+        chainId:
+          type: integer
+        txData:
+          type: string
+        txTarget:
+          type: string
+        txType:
+          type: string
+        value:
+          type: string
+        gasLimit:
+          type: string
