@@ -165,10 +165,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DepositCalldataResponseBody"
-                  }
+                  "$ref": "#/components/schemas/DepositCalldataResponseBody"
                 },
                 "example": {
                   "success": true,
@@ -251,10 +248,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SupportedTokens"
-                  }
+                  "$ref": "#/components/schemas/SupportedTokens"
                 },
                 "example": {
                   "success": true,
@@ -322,10 +316,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TokenSupported"
-                  }
+                  "$ref": "#/components/schemas/TokenSupported"
                 },
                 "example": {
                   "success": true,
@@ -369,10 +360,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SupportedChains"
-                  }
+                  "$ref": "#/components/schemas/SupportedChains"
                 },
                 "example": {
                   "success": true,
@@ -524,10 +512,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Quote"
-                  }
+                  "$ref": "#/components/schemas/Quote"
                 },
                 "example": {
                   "success": true,
@@ -795,10 +780,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Allowance"
-                  }
+                  "$ref": "#/components/schemas/Allowance"
                 },
                 "example": {
                   "success": true,
@@ -882,18 +864,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "example": {
-                    "success": true,
-                    "result": {
-                      "data": "0x095ea7b30000000000000000000000003a23f943181408eac424116af7b7790c94cb97a50000000000000000000000000000000000000000000000000000000000989680",
-                      "to": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-                      "from": "0xBB99eE59334f03eaE1386e496f0103767263989D"
-                    }
-                  },
-                  "items": {
-                    "$ref": "#/components/schemas/ApprovalTxnDataResponseBody"
-                  }
+                  "$ref": "#/components/schemas/ApprovalTxnDataResponseBody"
                 }
               }
             }
@@ -959,10 +930,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BridgeStatus"
-                  }
+                  "$ref": "#/components/schemas/BridgeStatus"
                 },
                 "example": {
                   "success": true,
@@ -1045,10 +1013,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Balances"
-                  }
+                  "$ref": "#/components/schemas/Balances"
                 },
                 "example": {
                   "code": 200,

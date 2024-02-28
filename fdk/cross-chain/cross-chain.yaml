@@ -98,8 +98,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/DepositCalldataResponseBody"
+                $ref: "#/components/schemas/DepositCalldataResponseBody"
               example:
                 success: true
                 data:
@@ -119,7 +118,7 @@ paths:
                       txType: "DEPOSIT"
                       value: "0x00"
                       gasLimit: "10000000"
-                      
+
   /bridge-swap/supported-tokens:
     get:
       tags:
@@ -151,8 +150,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/SupportedTokens"
+                $ref: "#/components/schemas/SupportedTokens"
               example:
                 success: true
                 result:
@@ -193,8 +191,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/TokenSupported"
+                $ref: "#/components/schemas/TokenSupported"
               example:
                 success: true
                 result:
@@ -224,8 +221,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/SupportedChains"
+                $ref: "#/components/schemas/SupportedChains"
               example:
                 success: true
                 result:
@@ -315,8 +311,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/Quote"
+                $ref: "#/components/schemas/Quote"
               example:
                 success: true
                 result:
@@ -549,8 +544,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/Allowance"
+                $ref: "#/components/schemas/Allowance"
               example:
                 success: true
                 result:
@@ -600,8 +594,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/ApprovalTxnDataResponseBody"
+                $ref: "#/components/schemas/ApprovalTxnDataResponseBody"
                 example:
                   success: true
                   result:
@@ -646,8 +639,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/BridgeStatus"
+                $ref: "#/components/schemas/BridgeStatus"
               example:
                 success: true
                 result:
@@ -710,8 +702,7 @@ paths:
             application/json:
               schema:
                 type: object
-                items:
-                  $ref: "#/components/schemas/Balances"
+                $ref: "#/components/schemas/Balances"
               example:
                 code: 200
                 data:
