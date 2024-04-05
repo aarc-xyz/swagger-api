@@ -1627,41 +1627,21 @@
             }
           },
           "logo": {
-            "type": "string",
-            "example": "https://assets.polygon.technology/tokenAssets/eth.svg"
+            "type": "string"
           }
-        },
-        "example": {
-          "balances": [
-            {
-              "decimals": 18,
-              "symbol": "ETH",
-              "name": "Ethereum",
-              "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-              "balance": "1000000000000000000",
-              "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
-              "native_token": true,
-              "type": "native",
-              "is_spam": false,
-              "usd_price": 1000
-            }
-          ],
-          "logo": "https://assets.polygon.technology/tokenAssets/eth.svg"
         }
       },
       "Balances": {
         "type": "object",
         "properties": {
           "code": {
-            "type": "integer",
-            "example": 200
+            "type": "integer"
           },
           "data": {
             "$ref": "#/components/schemas/Balances_data"
           },
           "message": {
-            "type": "string",
-            "example": "success"
+            "type": "string"
           }
         }
       },
@@ -2094,8 +2074,7 @@
               "$ref": "#/components/schemas/ChainBalance"
             }
           }
-        },
-        "example": "{\"balances\":{\"1\":{\"balances\":[{\"decimals\":18,\"symbol\":\"ETH\",\"name\":\"Ethereum\",\"token_address\":\"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"balance\":\"1000000000000000000\",\"logo\":\"https://assets.polygon.technology/tokenAssets/eth.svg\",\"native_token\":true,\"type\":\"native\",\"is_spam\":false,\"usd_price\":1000}],\"logo\":\"https://assets.polygon.technology/tokenAssets/eth.svg\"}}}"
+        }
       },
       "RouteTx_route": {
         "type": "object",
