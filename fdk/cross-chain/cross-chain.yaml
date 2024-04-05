@@ -703,6 +703,22 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/Balances"
+              example:
+                code: 200
+                data:
+                  balances:
+                    1:
+                      balances:
+                        - decimals: 18
+                          name: "Ether"
+                          symbol: "ETH"
+                          token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                          logo: "https://www.datocms-assets.com/86369/1669619533-ethereum.png"
+                          native_token: true
+                          type: "cryptocurrency"
+                          is_spam: false
+                          balance: "1000000000000000000"
+                          usd_price: 3268.762
 
   /bridge-swap/route-transaction-data:
     post:
@@ -1307,30 +1323,20 @@ components:
               additionalProperties:
                 $ref: "#/components/schemas/ChainBalance"
           example:
-            {
-              "balances":
-                {
-                  "1":
-                    {
-                      "balances":
-                        [
-                          {
-                            "decimals": 18,
-                            "symbol": "ETH",
-                            "name": "Ethereum",
-                            "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                            "balance": "1000000000000000000",
-                            "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
-                            "native_token": true,
-                            "type": "native",
-                            "is_spam": false,
-                            "usd_price": 1000,
-                          },
-                        ],
-                      "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
-                    },
-                },
-            }
+            balances:
+              1:
+                balances:
+                  - decimals: 18
+                    symbol: "ETH"
+                    name: "Ethereum"
+                    token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                    balance: "1000000000000000000"
+                    logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
+                    native_token: true
+                    type: "native"
+                    is_spam: false
+                    usd_price: 1000
+                logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
         message:
           type: string
           example: "success"
