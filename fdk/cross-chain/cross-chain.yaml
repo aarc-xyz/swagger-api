@@ -721,6 +721,7 @@ paths:
                           is_spam: false
                           balance: "1000000000000000000"
                           usd_price: 3008.762
+                message: "success"
 
   /bridge-swap/route-transaction-data:
     post:
