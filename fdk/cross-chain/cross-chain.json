@@ -1014,31 +1014,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Balances"
-                },
-                "example": {
-                  "code": 200,
-                  "data": {
-                    "balances": {
-                      "1": {
-                        "balances": [
-                          {
-                            "decimals": 18,
-                            "symbol": "ETH",
-                            "name": "Ethereum",
-                            "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                            "balance": "1000000000000000000",
-                            "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
-                            "native_token": true,
-                            "type": "native",
-                            "is_spam": false,
-                            "usd_price": 1000
-                          }
-                        ],
-                        "logo": "https://assets.polygon.technology/tokenAssets/eth.svg"
-                      }
-                    }
-                  },
-                  "message": "Success"
                 }
               }
             }
@@ -1629,21 +1604,41 @@
             }
           },
           "logo": {
-            "type": "string"
+            "type": "string",
+            "example": "https://assets.polygon.technology/tokenAssets/eth.svg"
           }
+        },
+        "example": {
+          "balances": [
+            {
+              "decimals": 18,
+              "symbol": "ETH",
+              "name": "Ethereum",
+              "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "balance": "1000000000000000000",
+              "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+              "native_token": true,
+              "type": "native",
+              "is_spam": false,
+              "usd_price": 1000
+            }
+          ],
+          "logo": "https://assets.polygon.technology/tokenAssets/eth.svg"
         }
       },
       "Balances": {
         "type": "object",
         "properties": {
           "code": {
-            "type": "integer"
+            "type": "integer",
+            "example": 200
           },
           "data": {
             "$ref": "#/components/schemas/Balances_data"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "example": "success"
           }
         }
       },
@@ -2076,7 +2071,8 @@
               "$ref": "#/components/schemas/ChainBalance"
             }
           }
-        }
+        },
+        "example": "{\"balances\":{\"1\":{\"balances\":[{\"decimals\":18,\"symbol\":\"ETH\",\"name\":\"Ethereum\",\"token_address\":\"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"balance\":\"1000000000000000000\",\"logo\":\"https://assets.polygon.technology/tokenAssets/eth.svg\",\"native_token\":true,\"type\":\"native\",\"is_spam\":false,\"usd_price\":1000}],\"logo\":\"https://assets.polygon.technology/tokenAssets/eth.svg\"}}}"
       },
       "RouteTx_route": {
         "type": "object",

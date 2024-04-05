@@ -81,7 +81,7 @@ paths:
             type: string
         - in: query
           name: estimateGas
-          description: Default is set to `true`. If you don't want to estimate gas on the backend. 
+          description: Default is set to `true`. If you don't want to estimate gas on the backend.
           required: false
           schema:
             type: boolean
@@ -703,24 +703,6 @@ paths:
               schema:
                 type: object
                 $ref: "#/components/schemas/Balances"
-              example:
-                code: 200
-                data:
-                  balances:
-                    "1":
-                      balances:
-                        - decimals: 18
-                          symbol: "ETH"
-                          name: "Ethereum"
-                          token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                          balance: "1000000000000000000"
-                          logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
-                          native_token: true
-                          type: "native"
-                          is_spam: false
-                          usd_price: 1000
-                      logo: "https://assets.polygon.technology/tokenAssets/eth.svg"
-                message: "Success"
 
   /bridge-swap/route-transaction-data:
     post:
@@ -1275,14 +1257,48 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AssetBalance"
+            example:
+              {
+                "decimals": 18,
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "balance": "1000000000000000000",
+                "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                "native_token": true,
+                "type": "native",
+                "is_spam": false,
+                "usd_price": 1000,
+              }
         logo:
           type: string
+          example: "https://assets.polygon.technology/tokenAssets/eth.svg"
+      example:
+        {
+          "balances":
+            [
+              {
+                "decimals": 18,
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "balance": "1000000000000000000",
+                "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                "native_token": true,
+                "type": "native",
+                "is_spam": false,
+                "usd_price": 1000,
+              },
+            ],
+          "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+        }
 
     Balances:
       type: object
       properties:
         code:
           type: integer
+          example: 200
         data:
           type: object
           properties:
@@ -1290,8 +1306,34 @@ components:
               type: object
               additionalProperties:
                 $ref: "#/components/schemas/ChainBalance"
+          example:
+            {
+              "balances":
+                {
+                  "1":
+                    {
+                      "balances":
+                        [
+                          {
+                            "decimals": 18,
+                            "symbol": "ETH",
+                            "name": "Ethereum",
+                            "token_address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                            "balance": "1000000000000000000",
+                            "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                            "native_token": true,
+                            "type": "native",
+                            "is_spam": false,
+                            "usd_price": 1000,
+                          },
+                        ],
+                      "logo": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                    },
+                },
+            }
         message:
           type: string
+          example: "success"
 
     RouteTx:
       type: object
@@ -1515,14 +1557,14 @@ components:
               type: string
             from:
               type: string
-    
+
     DepositCalldataResponseBody:
       type: object
       properties:
-        success: 
+        success:
           type: boolean
           example: true
-        data: 
+        data:
           type: object
           properties:
             approvalTxs:
