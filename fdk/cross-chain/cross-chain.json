@@ -1031,7 +1031,7 @@
                             "type": "cryptocurrency",
                             "is_spam": false,
                             "balance": "1000000000000000000",
-                            "usd_price": 3268.762
+                            "usd_price": 3008.762
                           }
                         ]
                       }
@@ -1635,13 +1635,15 @@
         "type": "object",
         "properties": {
           "code": {
-            "type": "integer"
+            "type": "integer",
+            "example": 200
           },
           "data": {
             "$ref": "#/components/schemas/Balances_data"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "example": "success"
           }
         }
       },
@@ -2074,7 +2076,8 @@
               "$ref": "#/components/schemas/ChainBalance"
             }
           }
-        }
+        },
+        "example": "{\"balances\":{\"1\":{\"balances\":[{\"decimals\":18,\"name\":\"Ether\",\"symbol\":\"ETH\",\"token_address\":\"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"logo\":\"https://www.datocms-assets.com/86369/1669619533-ethereum.png\",\"native_token\":true,\"type\":\"cryptocurrency\",\"is_spam\":false,\"balance\":\"1000000000000000000\",\"usd_price\":3268.762}]}}}"
       },
       "RouteTx_route": {
         "type": "object",
