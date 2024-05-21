@@ -202,7 +202,11 @@
                         "value": "0x00",
                         "gasLimit": "10000000"
                       }
-                    ]
+                    ],
+                    "refuelAmount": 0,
+                    "gasFee": 0,
+                    "executionTime": 0,
+                    "toAmount": "0"
                   }
                 }
               }
