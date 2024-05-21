@@ -148,6 +148,17 @@
             }
           },
           {
+            "name": "refuel",
+            "in": "query",
+            "description": "If true, it converts some number of final tokens into native tokens on the destination chain for gas. Check Refuel supported chains to get the list of supported chains.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "x-api-key",
             "in": "header",
             "description": "Aarc API Key",
